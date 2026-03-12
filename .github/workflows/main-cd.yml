@@ -23,12 +23,11 @@ jobs:
           SSH_HOST: ssh.serversandgen.web.id
           SSH_USER: ${{ secrets.USERNAME }}
         run: |
-          # 1. Siapkan SSH Directory & Key
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          # Menggunakan printf untuk menjaga format baris baru pada Private Key
+          printf "%s\n" "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          # 2. Buat file config SSH (Cara ini jauh lebih stabil)
           cat <<EOF > ~/.ssh/config
           Host myserver
               HostName $SSH_HOST
@@ -37,12 +36,20 @@ jobs:
               ProxyCommand cloudflared access ssh --hostname %h
               StrictHostKeyChecking no
               UserKnownHostsFile /dev/null
+              ConnectTimeout 30
           EOF
 
-          # 3. Jalankan perintah di server menggunakan nama Host 'myserver'
+          # Menjalankan perintah di server
           ssh myserver << 'EOF'
             set -e
             PROJECT_DIR="/var/www/genereta_portofolio_be"
+            
+            # Pastikan direktori ada, jika belum ada clone dulu (opsional)
+            if [ ! -d "$PROJECT_DIR" ]; then
+              echo "Directory $PROJECT_DIR not found!"
+              exit 1
+            fi
+
             cd $PROJECT_DIR
             
             echo "Pulling latest changes..."
