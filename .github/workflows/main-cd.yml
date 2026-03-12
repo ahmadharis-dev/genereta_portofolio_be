@@ -1,4 +1,4 @@
-name: SPRING CD
+name: Java Spring Boot CD (Docker)
 
 on:
   push:
@@ -11,12 +11,11 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        
+
       - name: Install cloudflared
         run: |
           curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
           sudo dpkg -i cloudflared.deb
-          cloudflared --version
 
       - name: Setup SSH & Deploy
         env:
@@ -24,12 +23,12 @@ jobs:
           SSH_HOST: ssh.serversandgen.web.id
           SSH_USER: ${{ secrets.USERNAME }}
         run: |
-          # Setup SSH Local (GitHub Runner)
+          # Setup SSH Key
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           
-          echo "Running deployment..."
+          # Jalankan perintah di server
           ssh -i ~/.ssh/id_rsa \
             -o "ProxyCommand=cloudflared access ssh --hostname $SSH_HOST" \
             -o "StrictHostKeyChecking=no" \
@@ -37,27 +36,33 @@ jobs:
             $SSH_USER@$SSH_HOST << 'EOF'
               set -e
               
-              PROJECT_PATH="/var/www/html/templateProject"
+              # Tentukan lokasi folder project
+              PROJECT_DIR="/var/www/genereta_portofolio_be"
               
-              # Tambahkan ke safe directory agar git tidak error
-              git config --global --add safe.directory "$PROJECT_PATH"
+              cd $PROJECT_DIR
               
-              if [ -d "$PROJECT_PATH/.git" ]; then
-                echo "Directory exists, pulling latest changes..."
-                cd "$PROJECT_PATH"
-                # Paksa ambil data terbaru dan reset jika ada konflik kecil
-                git fetch origin main
-                git reset --hard origin/main
-              else
-                echo "Directory not found or not a git repo. Cloning..."
-                cd /var/www/html
-                # Gunakan HTTPS agar tidak perlu setup SSH key lagi di sisi server
-                git clone https://github.com/yourusername/templateProject.git
-                cd templateProject
-              fi
+              echo "Pulling latest changes..."
+              git config --global --add safe.directory $PROJECT_DIR
+              git fetch origin main
+              git reset --hard origin/main
               
-              echo "Current git status:"
-              git status
+              echo "Building application with Maven..."
+              chmod +x mvnw
+              ./mvnw clean package -DskipTests
               
-              echo "Deployment completed successfully!"
+              echo "Building Docker Image..."
+              docker build -t gen-portfolio-be .
+              
+              echo "Restarting Container..."
+              docker stop gen-portfolio-container || true
+              docker rm gen-portfolio-container || true
+              
+              # Jalankan container di port 8080
+              docker run -d \
+                --name gen-portfolio-container \
+                -p 8080:8080 \
+                --restart unless-stopped \
+                gen-portfolio-be
+                
+              echo "Deployment Berhasil!"
           EOF
