@@ -23,46 +23,46 @@ jobs:
           SSH_HOST: ssh.serversandgen.web.id
           SSH_USER: ${{ secrets.USERNAME }}
         run: |
-          # Setup SSH Key
+          # 1. Siapkan SSH Key
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           
-          # Jalankan perintah di server
+          # 2. Masukkan perintah ke dalam variabel agar tidak berantakan saat dikirim
+          DEPLOY_SCRIPT=$(cat << 'EOF'
+            set -e
+            PROJECT_DIR="/var/www/genereta_portofolio_be"
+            cd $PROJECT_DIR
+            
+            echo "Pulling latest changes..."
+            git config --global --add safe.directory $PROJECT_DIR
+            git fetch origin main
+            git reset --hard origin/main
+            
+            echo "Building application with Maven..."
+            chmod +x mvnw
+            ./mvnw clean package -DskipTests
+            
+            echo "Building Docker Image..."
+            docker build -t gen-portfolio-be .
+            
+            echo "Restarting Container..."
+            docker stop gen-portfolio-container || true
+            docker rm gen-portfolio-container || true
+            
+            docker run -d \
+              --name gen-portfolio-container \
+              -p 8080:8080 \
+              --restart unless-stopped \
+              gen-portfolio-be
+              
+            echo "Deployment Berhasil!"
+          EOF
+          )
+
+          # 3. Jalankan SSH dengan satu baris perintah yang bersih
           ssh -i ~/.ssh/id_rsa \
             -o "ProxyCommand=cloudflared access ssh --hostname $SSH_HOST" \
             -o "StrictHostKeyChecking=no" \
             -o "UserKnownHostsFile=/dev/null" \
-            $SSH_USER@$SSH_HOST << 'EOF'
-              set -e
-              
-              # Tentukan lokasi folder project
-              PROJECT_DIR="/var/www/genereta_portofolio_be"
-              
-              cd $PROJECT_DIR
-              
-              echo "Pulling latest changes..."
-              git config --global --add safe.directory $PROJECT_DIR
-              git fetch origin main
-              git reset --hard origin/main
-              
-              echo "Building application with Maven..."
-              chmod +x mvnw
-              ./mvnw clean package -DskipTests
-              
-              echo "Building Docker Image..."
-              docker build -t gen-portfolio-be .
-              
-              echo "Restarting Container..."
-              docker stop gen-portfolio-container || true
-              docker rm gen-portfolio-container || true
-              
-              # Jalankan container di port 8080
-              docker run -d \
-                --name gen-portfolio-container \
-                -p 8080:8080 \
-                --restart unless-stopped \
-                gen-portfolio-be
-                
-              echo "Deployment Berhasil!"
-          EOF
+            $SSH_USER@$SSH_HOST "$DEPLOY_SCRIPT"
