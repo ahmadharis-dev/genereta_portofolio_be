@@ -21,7 +21,7 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           SSH_HOST: ssh.serversandgen.web.id
-          SSH_USER: ${{ secrets.USERNAME }}
+          SSH_USER: haris
         run: |
           mkdir -p ~/.ssh
           # Menggunakan printf untuk menjaga format baris baru pada Private Key
