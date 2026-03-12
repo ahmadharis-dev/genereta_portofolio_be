@@ -23,13 +23,24 @@ jobs:
           SSH_HOST: ssh.serversandgen.web.id
           SSH_USER: ${{ secrets.USERNAME }}
         run: |
-          # 1. Siapkan SSH Key
+          # 1. Siapkan SSH Directory & Key
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          
-          # 2. Masukkan perintah ke dalam variabel agar tidak berantakan saat dikirim
-          DEPLOY_SCRIPT=$(cat << 'EOF'
+
+          # 2. Buat file config SSH (Cara ini jauh lebih stabil)
+          cat <<EOF > ~/.ssh/config
+          Host myserver
+              HostName $SSH_HOST
+              User $SSH_USER
+              IdentityFile ~/.ssh/id_rsa
+              ProxyCommand cloudflared access ssh --hostname %h
+              StrictHostKeyChecking no
+              UserKnownHostsFile /dev/null
+          EOF
+
+          # 3. Jalankan perintah di server menggunakan nama Host 'myserver'
+          ssh myserver << 'EOF'
             set -e
             PROJECT_DIR="/var/www/genereta_portofolio_be"
             cd $PROJECT_DIR
@@ -58,11 +69,3 @@ jobs:
               
             echo "Deployment Berhasil!"
           EOF
-          )
-
-          # 3. Jalankan SSH dengan satu baris perintah yang bersih
-          ssh -i ~/.ssh/id_rsa \
-            -o "ProxyCommand=cloudflared access ssh --hostname $SSH_HOST" \
-            -o "StrictHostKeyChecking=no" \
-            -o "UserKnownHostsFile=/dev/null" \
-            $SSH_USER@$SSH_HOST "$DEPLOY_SCRIPT"
