@@ -71,7 +71,7 @@ jobs:
             
             docker run -d \
               --name gen-portfolio-container \
-              -p 8080:8080 \
+              -p 8001:8001 \
               --restart unless-stopped \
               gen-portfolio-be
               
