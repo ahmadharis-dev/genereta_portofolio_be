@@ -1,5 +1,5 @@
 # Gunakan image Java 17 sebagai dasar (sesuaikan jika kamu pakai Java 21)
-FROM openjdk-17-jdk-slim
+FROM eclipse-temurin:17-jdk-alpine
 
 # Tentukan folder kerja di dalam kontainer
 WORKDIR /app
