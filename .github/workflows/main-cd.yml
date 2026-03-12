@@ -1,0 +1,63 @@
+name: HTML CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
+      - name: Install cloudflared
+        run: |
+          curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared.deb
+          cloudflared --version
+
+      - name: Setup SSH & Deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SSH_HOST: ssh.serversandgen.web.id
+          SSH_USER: ${{ secrets.USERNAME }}
+        run: |
+          # Setup SSH Local (GitHub Runner)
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          echo "Running deployment..."
+          ssh -i ~/.ssh/id_rsa \
+            -o "ProxyCommand=cloudflared access ssh --hostname $SSH_HOST" \
+            -o "StrictHostKeyChecking=no" \
+            -o "UserKnownHostsFile=/dev/null" \
+            $SSH_USER@$SSH_HOST << 'EOF'
+              set -e
+              
+              PROJECT_PATH="/var/www/html/templateProject"
+              
+              # Tambahkan ke safe directory agar git tidak error
+              git config --global --add safe.directory "$PROJECT_PATH"
+              
+              if [ -d "$PROJECT_PATH/.git" ]; then
+                echo "Directory exists, pulling latest changes..."
+                cd "$PROJECT_PATH"
+                # Paksa ambil data terbaru dan reset jika ada konflik kecil
+                git fetch origin main
+                git reset --hard origin/main
+              else
+                echo "Directory not found or not a git repo. Cloning..."
+                cd /var/www/html
+                # Gunakan HTTPS agar tidak perlu setup SSH key lagi di sisi server
+                git clone https://github.com/yourusername/templateProject.git
+                cd templateProject
+              fi
+              
+              echo "Current git status:"
+              git status
+              
+              echo "Deployment completed successfully!"
+          EOF
