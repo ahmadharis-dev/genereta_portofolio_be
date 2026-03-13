@@ -62,7 +62,7 @@ jobs:
             ./mvnw clean package -DskipTests
             
             echo "Building Docker Image..."
-            # Pastikan docker build berjalan lancar
+            # Pastikan docker build berjalan lancar vrk
             docker build -t gen-portfolio-be .
             
             echo "Restarting Container..."
