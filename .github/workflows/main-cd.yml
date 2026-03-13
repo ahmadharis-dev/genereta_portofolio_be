@@ -63,7 +63,7 @@ jobs:
             
             echo "Building Docker Image..."
             # Pastikan docker build berjalan lancar vrk
-            docker build -t gen-portfolio-be .
+            docker build -t www-backend .
             
             echo "Restarting Container..."
             docker stop gen-portfolio-container || true
