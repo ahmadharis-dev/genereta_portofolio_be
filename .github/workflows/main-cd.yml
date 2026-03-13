@@ -66,11 +66,13 @@ jobs:
             docker build -t www-backend .
             
             echo "Restarting Container..."
-            docker stop gen-portfolio-container || true
-            docker rm gen-portfolio-container || true
+            # Stop dan hapus container yang pakai port 8001 (sesuaikan namanya)
+            docker stop gen-portfolio-be || true
+            docker rm gen-portfolio-be || true
             
+            # Jalankan ulang dengan nama yang konsisten
             docker run -d \
-              --name gen-portfolio-container \
+              --name gen-portfolio-be \
               -p 8001:8001 \
               --restart unless-stopped \
               gen-portfolio-be
