@@ -118,7 +118,7 @@ public class UserController {
             )
     )
     @PostMapping
-    public Object save(UserRequestDTO userRequestDTO) {
+    public Object save(@RequestBody UserRequestDTO userRequestDTO) {
         String name = userRequestDTO.getName();
         String email = userRequestDTO.getEmail();
         String fullname = userRequestDTO.getFullname();
