@@ -104,7 +104,7 @@ public class AuthController {
                     example = ""
             )
     })
-    public String logout(@RequestHeader("Session-Id") String sessionId) {
+    public String logout(@RequestHeader("X-Session-ID") String sessionId) {
         checkSessionId(sessionId);
         Session session = sessionRepository.findBySessionId(sessionId);
         session.setIsExpired(true);
