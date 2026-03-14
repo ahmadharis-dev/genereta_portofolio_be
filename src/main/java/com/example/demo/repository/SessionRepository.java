@@ -15,7 +15,7 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
         """, nativeQuery = true)
     int checkSession(@Param("sessionId") String sessionId);
     @Query(value = """
-            SELECT * FROM sessions WHERE session_id
+            SELECT * FROM sessions WHERE session_id = :sessionId
             """, nativeQuery = true)
     Session findBySessionId(String sessionId);
 }
