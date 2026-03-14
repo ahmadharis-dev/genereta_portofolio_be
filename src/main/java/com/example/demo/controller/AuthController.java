@@ -82,7 +82,7 @@ public class AuthController {
     }
     @PostMapping("/logout")
     @Operation(
-            summary = "Logout",
+            summary = "Logout NEw",
             description = "Logout User"
     )
     @ApiResponse(
