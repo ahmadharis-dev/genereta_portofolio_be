@@ -68,10 +68,9 @@ public class UserController {
     @Parameters({
             @Parameter(
                     name = "X-Session-ID",
-                    description = "ID Session aktif user",
                     required = true,
                     in = ParameterIn.HEADER,
-                    example = "sess-12345-abcde"
+                    example = ""
             )
     })
     public PageResponseDTO<UserReponseDTO> list(@RequestHeader("X-Session-ID") String sessionId,PageRequestListDTO req) {

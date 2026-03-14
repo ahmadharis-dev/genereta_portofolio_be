@@ -9,6 +9,9 @@ import com.example.demo.repository.AuthRepository;
 import com.example.demo.repository.SessionRepository;
 import com.example.demo.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -82,7 +85,7 @@ public class AuthController {
     }
     @PostMapping("/logout")
     @Operation(
-            summary = "Logout NEw",
+            summary = "Logout",
             description = "Logout User"
     )
     @ApiResponse(
@@ -93,7 +96,16 @@ public class AuthController {
                     schema = @Schema(implementation = LoginResponseDTO.class)
             )
     )
+    @Parameters({
+            @Parameter(
+                    name = "X-Session-ID",
+                    required = true,
+                    in = ParameterIn.HEADER,
+                    example = ""
+            )
+    })
     public String logout(@RequestHeader("Session-Id") String sessionId) {
+        checkSessionId(sessionId);
         Session session = sessionRepository.findBySessionId(sessionId);
         session.setIsExpired(true);
         sessionRepository.save(session);
