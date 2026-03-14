@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -118,7 +119,7 @@ public class UserController {
             )
     )
     @PostMapping
-    public Object save(@RequestBody UserRequestDTO userRequestDTO) {
+    public Object save(@Valid  @RequestBody UserRequestDTO userRequestDTO) {
         String name = userRequestDTO.getName();
         String email = userRequestDTO.getEmail();
         String fullname = userRequestDTO.getFullname();
