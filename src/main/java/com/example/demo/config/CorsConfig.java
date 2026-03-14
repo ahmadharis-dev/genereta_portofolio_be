@@ -11,6 +11,6 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:4200","https://fe-portofolio.serversandgen.web.id") // alamat frontend Vue
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*");
+                .allowedHeaders("*").allowCredentials(true);
     }
 }
