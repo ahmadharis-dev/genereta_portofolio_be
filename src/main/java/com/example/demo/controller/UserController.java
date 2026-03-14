@@ -7,9 +7,14 @@ import com.example.demo.model.UserRequestDTO;
 import com.example.demo.model.PageRequestListDTO;
 import com.example.demo.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,14 +25,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final AuthController authController;
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthController authController) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authController = authController;
     }
 
     @GetMapping("/{id}")
@@ -57,8 +65,18 @@ public class UserController {
             summary = "Get list users",
             description = "Ambil list user dengan pagination"
     )
-    public PageResponseDTO<UserReponseDTO> list(PageRequestListDTO req) {
+    @Parameters({
+            @Parameter(
+                    name = "X-Session-ID",
+                    description = "ID Session aktif user",
+                    required = true,
+                    in = ParameterIn.HEADER,
+                    example = "sess-12345-abcde"
+            )
+    })
+    public PageResponseDTO<UserReponseDTO> list(@RequestHeader("X-Session-ID") String sessionId,PageRequestListDTO req) {
 
+        authController.checkSessionId(sessionId);
         int page = req.getPageNo() != null ? req.getPageNo() - 1 : 0;
         int size = req.getRecordPerPage() != null ? req.getRecordPerPage() : 10;
 

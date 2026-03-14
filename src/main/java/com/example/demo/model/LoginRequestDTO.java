@@ -1,0 +1,16 @@
+package com.example.demo.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
+@Data
+public class LoginRequestDTO {
+    @NotBlank
+    @JsonProperty("Email")
+    private String email;
+
+    @NotBlank
+    @JsonProperty("Password")
+    private String password;
+}
