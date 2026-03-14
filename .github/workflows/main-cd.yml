@@ -63,7 +63,7 @@ jobs:
             
             echo "Building Docker Image..."
             # Pastikan docker build berjalan lancar vrk
-            docker build -t www-backend .
+            docker build -t gen-portfolio-be .
             
             echo "Restarting Container..."
             # Stop dan hapus container yang pakai port 8001 (sesuaikan namanya)
