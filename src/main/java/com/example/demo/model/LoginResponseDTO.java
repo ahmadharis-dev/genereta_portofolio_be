@@ -5,6 +5,15 @@ import lombok.Data;
 
 @Data
 public class LoginResponseDTO {
+    @JsonProperty("Id")
+    private int id;
+
+    @JsonProperty("Name")
+    private String name;
+
+    @JsonProperty("Fullname")
+    private String fullname;
+
     @JsonProperty("email")
     private String email;
 

@@ -80,6 +80,9 @@ public class AuthController {
         loginResponseDTO.setStatus("200");
         loginResponseDTO.setSessionId(SessionId);
         loginResponseDTO.setEmail(requestDTO.getEmail());
+        loginResponseDTO.setName(user.getName());
+        loginResponseDTO.setFullname(user.getFullname());
+        loginResponseDTO.setId(user.getId());
         return loginResponseDTO;
 
     }
