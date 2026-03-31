@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ExperienceRequestDTO;
 import com.example.demo.model.ExperienceResponseDTo;
+import com.example.demo.model.UpdateOrderExperienceRequestDTO;
 import com.example.demo.service.ExperienceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,5 +52,12 @@ public class ExperienceController {
     public ExperienceResponseDTo getByUser(@PathVariable Integer userId) {
         log.info("Received request to get experiences for user ID: {}", userId);
         return experienceService.getExperienceByUserId(userId);
+    }
+
+    @Operation(summary = "Update Order Experience", description = "Mengurutkan ulang list experience berdasarkan list ID yang dikirim")
+    @PostMapping("/update-order")
+    public ExperienceResponseDTo updateOrder(@RequestBody UpdateOrderExperienceRequestDTO request) {
+        log.info("Updating order for user ID: {}", request.getUserId());
+        return experienceService.updateOrder(request);
     }
 }

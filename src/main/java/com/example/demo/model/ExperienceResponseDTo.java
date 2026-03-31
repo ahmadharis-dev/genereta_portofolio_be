@@ -25,6 +25,9 @@ public class ExperienceResponseDTo {
         @JsonProperty("Id")
         private Integer id;
 
+        @JsonProperty("Order")
+        private Integer order;
+
         @JsonProperty("CompanyName")
         private String companyName;
 

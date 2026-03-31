@@ -12,6 +12,9 @@ public class Experience {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "`order`")
+    private Integer order;
+
     @Column(name = "userId")
     private Integer userId;
 

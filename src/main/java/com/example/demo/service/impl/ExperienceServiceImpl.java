@@ -4,6 +4,7 @@ import com.example.demo.entity.Experience;
 import com.example.demo.entity.User;
 import com.example.demo.model.ExperienceRequestDTO;
 import com.example.demo.model.ExperienceResponseDTo;
+import com.example.demo.model.UpdateOrderExperienceRequestDTO;
 import com.example.demo.repository.ExperienceRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ExperienceService;
@@ -27,6 +28,15 @@ public class ExperienceServiceImpl implements ExperienceService {
                                  UserRepository userRepository) {
         this.experienceRepository = experienceRepository;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public Integer getLastOrderByUserId(Integer userId) {
+        Integer order = experienceRepository.getLastOrderByUserId(userId);
+        if (order == null) {
+            order = 0;
+        }
+        return order + 1;
     }
 
     @Override
@@ -58,6 +68,7 @@ public class ExperienceServiceImpl implements ExperienceService {
             responseItem.setDescriptionTask(savedExperience.getDescriptionTask());
             responseItem.setStartDate(savedExperience.getStartDate());
             responseItem.setEndDate(savedExperience.getEndDate());
+            responseItem.setOrder(savedExperience.getOrder());
 
             savedExperiences.add(responseItem);
         }
@@ -73,6 +84,8 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     // Helper method untuk save dan return entity
     private Experience insertAndReturn(ExperienceRequestDTO.ExperienceItemRequest request, Integer userId) {
+        Integer order = this.getLastOrderByUserId(userId);
+        log.info("Orde {}",order);
         Experience experience = new Experience();
         experience.setUserId(userId);
         experience.setCompanyName(request.getCompanyName());
@@ -80,6 +93,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         experience.setDescriptionTask(request.getDescriptionTask());
         experience.setStartDate(request.getStartDate());
         experience.setEndDate(request.getEndDate());
+        experience.setOrder(order);
         return experienceRepository.save(experience);
     }
     @Override
@@ -144,5 +158,18 @@ public class ExperienceServiceImpl implements ExperienceService {
             experienceRepository.save(experience);
             log.debug("Updated experience with ID: {}", id);
         }
+    }
+
+    @Override
+    @Transactional
+    public ExperienceResponseDTo updateOrder(UpdateOrderExperienceRequestDTO request) {
+        List<Integer> ids = request.getExperienceIds();
+
+        for (int i = 0; i < ids.size(); i++) {
+            Integer id = ids.get(i);
+            experienceRepository.updateSortOrder(id, i + 1);
+        }
+
+        return getExperienceByUserId(request.getUserId());
     }
 }
