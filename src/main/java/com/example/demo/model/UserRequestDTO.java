@@ -22,8 +22,15 @@ public class UserRequestDTO {
     @JsonProperty("Email")
     private String email;
 
-    @NotBlank
+
     @JsonProperty("Password")
     private String password;
+
+    @JsonProperty("Phone")
+    private String phone;
+    @JsonProperty("Linkedin")
+    private String linkedin;
+    @JsonProperty("As")
+    private String as;
 
 }

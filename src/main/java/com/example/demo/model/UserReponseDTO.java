@@ -20,4 +20,11 @@ public class UserReponseDTO {
 
     @JsonProperty("Email")
     private String email;
+
+    @JsonProperty("Phone")
+    private String phone;
+    @JsonProperty("Linkedin")
+    private String linkedin;
+    @JsonProperty("As")
+    private String as;
 }

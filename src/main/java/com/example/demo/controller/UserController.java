@@ -175,6 +175,9 @@ public class UserController {
         user.setName(userRequestDTO.getName());
         user.setEmail(userRequestDTO.getEmail());
         user.setFullname(userRequestDTO.getFullname());
+        user.setPhone(userRequestDTO.getPhone());
+        user.setLinkedin(userRequestDTO.getLinkedin());
+        user.setAs_role(userRequestDTO.getAs());
 
         if (userRequestDTO.getPassword() != null &&
                 !userRequestDTO.getPassword().isBlank()) {
@@ -188,6 +191,11 @@ public class UserController {
         UserReponseDTO res = new UserReponseDTO();
         res.setId(user.getId());
         res.setName(user.getName());
+        res.setFullname(user.getFullname());
+        res.setEmail(user.getEmail());
+        res.setPhone(userRequestDTO.getPhone());
+        res.setLinkedin(userRequestDTO.getLinkedin());
+        res.setAs(userRequestDTO.getAs());
         return res;
     }
 

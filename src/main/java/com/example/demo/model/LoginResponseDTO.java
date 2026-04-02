@@ -17,8 +17,8 @@ public class LoginResponseDTO {
     private String phone;
     @JsonProperty("Linkedin")
     private String linkedin;
-    @JsonProperty("As")
-    private String as;
+    @JsonProperty("AsRole")
+    private String asRole;
 
     @JsonProperty("email")
     private String email;

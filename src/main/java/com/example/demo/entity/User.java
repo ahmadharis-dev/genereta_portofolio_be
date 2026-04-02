@@ -24,11 +24,11 @@ public class User {
 
     @Column(name = "password")
     private String password;
-    @JsonProperty("Phone")
+    @JsonProperty("phone")
     private String phone;
-    @JsonProperty("Linkedin")
+    @JsonProperty("linkedin")
     private String linkedin;
-    @JsonProperty("As")
-    private String as;
+    @JsonProperty("as_role")
+    private String as_role;
 
 }
