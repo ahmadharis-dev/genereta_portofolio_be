@@ -10,9 +10,14 @@ import java.util.List;
 
 public interface ExperienceRepository extends JpaRepository<Experience, Integer> {
     @Query(value = """
-    SELECT * FROM experience WHERE user_id = :userId
+    SELECT * FROM experience WHERE user_id = :userId ORDER BY `order` ASC
 """, nativeQuery = true)
     List<Experience> getByUser(@Param("userId") Integer userId);
+
+    @Query(value = """
+            SELECT * FROM experience WHERE id = :id
+            """,nativeQuery = true)
+    Experience getById(@Param("id") Integer id);
 
     @Query(value = """
             SELECT COALESCE(MAX(`order`), 0)

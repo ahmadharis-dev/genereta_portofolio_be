@@ -85,8 +85,14 @@ public class ExperienceServiceImpl implements ExperienceService {
     // Helper method untuk save dan return entity
     private Experience insertAndReturn(ExperienceRequestDTO.ExperienceItemRequest request, Integer userId) {
         Integer order = this.getLastOrderByUserId(userId);
-        log.info("Orde {}",order);
-        Experience experience = new Experience();
+        Integer experienceId =  request.getId();
+        Experience experience;
+        if(experienceId == null || experienceId == 0) {
+            experience = new Experience();
+        }else{
+            experience = experienceRepository.getById(experienceId);
+        }
+
         experience.setUserId(userId);
         experience.setCompanyName(request.getCompanyName());
         experience.setProjectName(request.getProjectName());
@@ -110,6 +116,7 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .map(exp -> {
                     ExperienceResponseDTo.ExperienceItemResponse dto =
                             new ExperienceResponseDTo.ExperienceItemResponse();
+                    dto.setOrder(exp.getOrder());
                     dto.setId(exp.getId());
                     dto.setCompanyName(exp.getCompanyName());
                     dto.setProjectName(exp.getProjectName());

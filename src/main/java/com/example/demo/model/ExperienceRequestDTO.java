@@ -23,6 +23,9 @@ public class ExperienceRequestDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ExperienceItemRequest{
+        @JsonProperty("Id")
+        private Integer id;
+
         @JsonProperty("CompanyName")
         private String companyName;
 
