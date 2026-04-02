@@ -13,6 +13,12 @@ public class LoginResponseDTO {
 
     @JsonProperty("Fullname")
     private String fullname;
+    @JsonProperty("Phone")
+    private String phone;
+    @JsonProperty("Linkedin")
+    private String linkedin;
+    @JsonProperty("As")
+    private String as;
 
     @JsonProperty("email")
     private String email;

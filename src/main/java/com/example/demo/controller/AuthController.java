@@ -78,6 +78,9 @@ public class AuthController {
         insertSessionId(user.getId(),SessionId);
         loginResponseDTO.setMessage("Login Successful");
         loginResponseDTO.setStatus("200");
+        loginResponseDTO.setAs(user.getAs());
+        loginResponseDTO.setPhone(user.getPhone());
+        loginResponseDTO.setLinkedin(user.getLinkedin());
         loginResponseDTO.setSessionId(SessionId);
         loginResponseDTO.setEmail(requestDTO.getEmail());
         loginResponseDTO.setName(user.getName());
