@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.ExperienceDeleteResponseDTO;
 import com.example.demo.model.ExperienceRequestDTO;
 import com.example.demo.model.ExperienceResponseDTo;
 import com.example.demo.model.UpdateOrderExperienceRequestDTO;
@@ -52,6 +53,19 @@ public class ExperienceController {
     public ExperienceResponseDTo getByUser(@PathVariable Integer userId) {
         log.info("Received request to get experiences for user ID: {}", userId);
         return experienceService.getExperienceByUserId(userId);
+    }
+
+    @Operation(summary = "Delete User Experience")
+    @ApiResponse(
+            responseCode =  "200",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ExperienceDeleteResponseDTO.class)
+            )
+    )
+    @PostMapping("/{Id}")
+    public ExperienceDeleteResponseDTO deleteExperienceById(@PathVariable Integer Id){
+        return experienceService.deleteById(Id);
     }
 
     @Operation(summary = "Update Order Experience", description = "Mengurutkan ulang list experience berdasarkan list ID yang dikirim")

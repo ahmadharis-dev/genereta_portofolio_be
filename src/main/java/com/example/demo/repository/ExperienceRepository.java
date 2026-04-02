@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.Experience;
+import com.example.demo.model.ExperienceDeleteResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,6 +26,12 @@ public interface ExperienceRepository extends JpaRepository<Experience, Integer>
             WHERE user_id = :userId
             """, nativeQuery = true)
     Integer getLastOrderByUserId(@Param("userId") Integer userId);
+
+    @Modifying
+    @Query(value = """
+            DELETE FROM experience WHERE id = :id
+            """, nativeQuery = true)
+    void deleteById(@Param("id") Integer id);
 
     @Modifying
     @Query(value = "UPDATE experience SET `order` = :order WHERE id = :id", nativeQuery = true)

@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.Experience;
 import com.example.demo.entity.User;
+import com.example.demo.model.ExperienceDeleteResponseDTO;
 import com.example.demo.model.ExperienceRequestDTO;
 import com.example.demo.model.ExperienceResponseDTo;
 import com.example.demo.model.UpdateOrderExperienceRequestDTO;
@@ -37,6 +38,25 @@ public class ExperienceServiceImpl implements ExperienceService {
             order = 0;
         }
         return order + 1;
+    }
+
+    @Override
+    @Transactional
+    public ExperienceDeleteResponseDTO deleteById(Integer id) {
+
+        ExperienceDeleteResponseDTO response = new ExperienceDeleteResponseDTO();
+
+        Experience experienceOpt = experienceRepository.getById(id);
+
+        if (experienceOpt == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Not Found");
+        }
+
+        experienceRepository.deleteById(id);
+
+        response.setMessage("Data Deleted");
+
+        return response;
     }
 
     @Override
