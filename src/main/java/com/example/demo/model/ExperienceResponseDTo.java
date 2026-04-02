@@ -42,5 +42,8 @@ public class ExperienceResponseDTo {
 
         @JsonProperty("EndDate")
         private String endDate;
+
+        @JsonProperty("As")
+        private String as;
     }
 }

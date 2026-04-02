@@ -34,4 +34,8 @@ public class Experience {
     @Column(name = "endDate")
     private String endDate;
 
+    @Column(name = "asRole")
+    private String as_role;
+
+
 }

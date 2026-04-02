@@ -89,6 +89,7 @@ public class ExperienceServiceImpl implements ExperienceService {
             responseItem.setStartDate(savedExperience.getStartDate());
             responseItem.setEndDate(savedExperience.getEndDate());
             responseItem.setOrder(savedExperience.getOrder());
+            responseItem.setAs(savedExperience.getAs_role());
 
             savedExperiences.add(responseItem);
         }
@@ -120,6 +121,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         experience.setStartDate(request.getStartDate());
         experience.setEndDate(request.getEndDate());
         experience.setOrder(order);
+        experience.setAs_role(request.getAs());
         return experienceRepository.save(experience);
     }
     @Override
@@ -143,6 +145,7 @@ public class ExperienceServiceImpl implements ExperienceService {
                     dto.setDescriptionTask(exp.getDescriptionTask());
                     dto.setStartDate(exp.getStartDate());
                     dto.setEndDate(exp.getEndDate());
+                    dto.setAs(exp.getAs_role());
                     return dto;
                 })
                 .toList();

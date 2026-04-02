@@ -40,5 +40,8 @@ public class ExperienceRequestDTO {
 
         @JsonProperty("EndDate")
         private String endDate;
+
+        @JsonProperty("As")
+        private String as;
     }
 }
