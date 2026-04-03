@@ -1,11 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.User;
-import com.example.demo.model.PageResponseDTO;
-import com.example.demo.model.UserReponseDTO;
-import com.example.demo.model.UserRequestDTO;
-import com.example.demo.model.PageRequestListDTO;
+import com.example.demo.model.*;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.ResumeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -33,10 +32,12 @@ public class UserController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthController authController;
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthController authController) {
+    private final ResumeService resumeService;
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthController authController,ResumeService resumeService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authController = authController;
+        this.resumeService = resumeService;
     }
 
     @GetMapping("/{id}")
@@ -199,4 +200,33 @@ public class UserController {
         return res;
     }
 
+    @PostMapping("/getResumeBasedOnEmailAndPassword")
+    @Operation(
+            summary = "Get Resume Based On Email And Password"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Resume Based On Email And Password",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ResumeResponseDTO.class)
+            )
+    )
+   public ResumeResponseDTO getResumeBasedOnEmailAndPassword(@RequestBody LoginRequestDTO loginRequestDTO) {
+       String email = loginRequestDTO.getEmail();
+       String password = loginRequestDTO.getPassword();
+       ResumeRequestDTO resumeRequestDTO = new ResumeRequestDTO();
+
+       Optional<User> userQuery = userRepository.findByEmail(email);
+       if(userQuery.isEmpty()){
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+       }
+       User user = userQuery.get();
+       if(!passwordEncoder.matches(password,user.getPassword())){
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username or password is incorrect");
+       }
+       resumeRequestDTO.setId(userQuery.get().getId());
+       return resumeService.downloadResume(resumeRequestDTO);
+
+   }
 }
