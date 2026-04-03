@@ -16,6 +16,9 @@ public class ResumeResponseDTO {
     @JsonProperty("Email")
     private String email;
 
+    @JsonProperty("AsRole")
+    private String asRole;
+
     @JsonProperty("Phone")
     private String phone;
 

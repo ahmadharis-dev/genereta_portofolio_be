@@ -34,6 +34,9 @@ public class ResumeService {
         ResumeResponseDTO response = new ResumeResponseDTO();
         response.setFullname(user.getFullname());
         response.setEmail(user.getEmail());
+        response.setPhone(user.getPhone());
+        response.setAsRole(user.getAs_role());
+        response.setLinkedin(user.getLinkedin());
         List<ResumeResponseDTO.Experience> experienceDtoList = new ArrayList<>();
 
         if (experiencesFromDb != null) {
