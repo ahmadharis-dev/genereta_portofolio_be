@@ -63,19 +63,19 @@ jobs:
             
             echo "Building Docker Image..."
             # Pastikan docker build berjalan lancar vrk
-            docker build -t gen-portfolio-be .
+            docker build -t  be-genapi-container .
             
             echo "Restarting Container..."
             # Stop dan hapus container yang pakai port 8001 (sesuaikan namanya)
-            docker stop gen-portfolio-be || true
-            docker rm gen-portfolio-be || true
+            docker stop  be-genapi-container || true
+            docker rm  be-genapi-container || true
             
             # Jalankan ulang dengan nama yang konsisten
             docker run -d \
-              --name gen-portfolio-be \
-              -p 8001:8001 \
+              --name  be-genapi-container \
+              -p 8082:8080 \
               --restart unless-stopped \
-              gen-portfolio-be
+               be-genapi-container
               
             echo "Deployment Berhasil!"
           EOF
