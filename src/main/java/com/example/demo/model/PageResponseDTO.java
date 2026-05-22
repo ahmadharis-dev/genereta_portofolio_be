@@ -11,4 +11,5 @@ public class PageResponseDTO<T> {
     private List<T> data;
     private long totalData;
     private int totalPage;
+
 }

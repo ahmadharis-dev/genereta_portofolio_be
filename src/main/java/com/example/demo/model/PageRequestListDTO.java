@@ -14,4 +14,6 @@ public class PageRequestListDTO {
 
     @JsonProperty("RecordPerPage")
     private Integer recordPerPage = 10;
+    @JsonProperty("Search")
+    private String search;
 }
