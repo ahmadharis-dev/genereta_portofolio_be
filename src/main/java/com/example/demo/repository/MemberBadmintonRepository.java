@@ -9,6 +9,7 @@ public interface MemberBadmintonRepository extends JpaRepository<MemberBadminton
     Page<MemberBadminton> findByNameContainingIgnoreCaseOrClassnameContainingIgnoreCase(
             String nameKeyword,
             String classnameKeyword,
+            String classesKeyword,
             Pageable pageable
     );
 }

@@ -13,4 +13,8 @@ public class MemberRequestDTO {
     @NotBlank
     @JsonProperty("Classname")
     private String classname;
+
+    @NotBlank
+    @JsonProperty("Classes")
+    private String classes;
 }

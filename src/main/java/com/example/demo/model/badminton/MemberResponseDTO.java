@@ -15,4 +15,7 @@ public class MemberResponseDTO {
     @JsonProperty("Classname")
     private String classname;
 
+    @JsonProperty("Classes")
+    private String classes;
+
 }

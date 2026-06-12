@@ -17,4 +17,7 @@ public class MemberBadminton {
 
     @Column(name = "classname")
     private String classname;
+
+    @Column(name = "classes")
+    private String classes;
 }

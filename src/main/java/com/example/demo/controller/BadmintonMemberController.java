@@ -31,6 +31,7 @@ public class BadmintonMemberController {
         MemberBadminton member = new MemberBadminton();
         member.setName(req.getName());
         member.setClassname(req.getClassname());
+        member.setClasses(req.getClasses());
 
         MemberBadminton savedMember = memberBadmintonRepository.save(member);
 
@@ -82,7 +83,7 @@ public class BadmintonMemberController {
         if (req.getSearch() != null && !req.getSearch().trim().isEmpty()) {
             String keyword = req.getSearch().trim();
             // Memanggil query custom di repository untuk pencarian partial (LIKE)
-            pageResult = memberBadmintonRepository.findByNameContainingIgnoreCaseOrClassnameContainingIgnoreCase(keyword, keyword, pageable);
+            pageResult = memberBadmintonRepository.findByNameContainingIgnoreCaseOrClassnameContainingIgnoreCase(keyword, keyword, keyword, pageable);
         } else {
             pageResult = memberBadmintonRepository.findAll(pageable);
         }
@@ -93,6 +94,7 @@ public class BadmintonMemberController {
                     memberResponseDTO.setId(memberBadminton.getId());
                     memberResponseDTO.setName(memberBadminton.getName());
                     memberResponseDTO.setClassname(memberBadminton.getClassname());
+                    memberResponseDTO.setClasses(memberBadminton.getClasses());
                     return memberResponseDTO;
                 }).toList();
 
